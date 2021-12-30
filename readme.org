@@ -1,0 +1,119 @@
+* Dynamic Tiling & Floating Windows for StumpWM
+
+This extension =stumpwm-dynamic-float= provides StumpWM users a
+(gapped) dynamic tiling experience based on its floating windows.
+
+[Demo video should come soon..]
+
+** Installation
+
+1. Have a working stumpwm on your machine.
+
+2. If you use =quicklisp=, download the repo into your quicklisp
+   local directory. To check if it would work properly, with
+   quicklisp loaded in your CL implementation, load the system by
+   =(ql:quickload :stumpwm-dynamic-float)=. Finally, if it works
+   out well, add that form into your StumpWM init config.
+
+3. To start enjoying =stumpwm-dynamic-float=, see the configuration
+   example below.
+
+** Configuration Example
+
+*** Key-bindings
+
+Commonly used commands defined in =stumpwm-dynamic-float= are
+included in this configuration example.
+
+#+begin_src common-lisp
+(in-package :stumpwm-dfg-II)
+
+;; Navigation
+(define-key *top-map* (kbd "s-j") "window-focus-next")
+(define-key *top-map* (kbd "s-k") "window-focus-prev")
+(define-key *top-map* (kbd "s-J") "permute-window")
+(define-key *top-map* (kbd "s-K") "permute-window-reverse")
+
+;; Master Ratio
+(define-key *top-map* (kbd "s-+") "master-ratio-increase")
+(define-key *top-map* (kbd "s--") "master-ratio-decrease")
+(define-key *top-map* (kbd "s-=") "master-ratio-set-default")
+
+;; Layout Selection
+(define-key *top-map* (kbd "s-f") "layout-toggle-fullscreen")
+(define-key *top-map* (kbd "s-F") "layout-change-next")
+
+;; Gaps
+(define-key *top-map* (kbd "s-[") "gap-toggle")
+(define-key *top-map* (kbd "s-]") "gap-set-default")
+(define-key *top-map* (kbd "s-}") "gap-increase")
+(define-key *top-map* (kbd "s-{") "gap-decrease")
+
+;; Window Status: 'tiled, 'foreground, 'background.
+(define-key *top-map* (kbd "s-_") "window-status-tile-at-point")
+(define-key *top-map* (kbd "s-|") "window-status-make-all-tiled")
+#+end_src
+
+*** Group Creation
+
+I put the following code in my StumpWM config so whenever it
+starts it create 10 dynamic floating windows for me, named 0
+to 9.
+
+#+begin_src common-lisp
+(in-package :stumpwm-dfg-II)
+
+;; Groups creation
+(grename "1")
+(loop for n in '(2 3 4 5 6 7 8 9 0)
+      do (gnew-dyn-float-II-bg (format nil "~a" n)))
+(gkill)
+(gnew-dyn-float-II "1")
+#+end_src
+
+To bind group-navigation and window-throwing in batch, use the
+following code.
+
+#+begin_src common-lisp
+(in-package :stumpwm)
+
+;; Keybindings for selecting and navigating among groups.
+;; E.g. =super-3= navigates to the third group, while =super-#=
+;; throws the current window at point to the third group.
+(mapcar (lambda (n)
+          (define-key *top-map*
+              (kbd (format nil "s-~a" n))
+            (format nil "gselect ~a" n))
+          (let ((shift-keys '(")" "!" "@" "#" "$"
+                              "%" "^" "&" "*" "(")))
+            (define-key *top-map*
+                (kbd (format nil "s-~a" (nth n shift-keys)))
+              (format nil "gmove ~a" n))))
+        '(1 2 3 4 5 6 7 8 9 0))
+#+end_src
+
+** Layout and Customization
+
+Currently, supported layouts are ='(left-vertical horizontal
+fullscreen)=. To define your own layout, check out their source
+codes and the macro =deflayout=.
+
+The simplest example is ='fullscreen=:
+
+#+begin_src common-lisp
+(deflayout fullscreen
+  "A layout where every tiled windows are fully expanded."
+  (list :x x0 :y y0 :width sw :height sh))
+#+end_src
+
+Unwinding the macro, you can see that this defines a function
+=#'fullscreen=, which will be called to calculate the desired
+values =(:x :y :width :height)= of the floating windows that are
+supposed to be tiled. Then something else use this calculated
+information to redraw the window. See ='left-vertical= for a more
+complicated example (but not too bad).
+
+** Comments
+
++ Only tested on SBCL.
++ Any feedback is welcome (especially lisp-fu related).
