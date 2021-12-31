@@ -10,22 +10,13 @@
 ;;; OOP Model
 
 (defclass gap-info ()
-  ((gap-size
-    :initform *default-gap-size*
-    :accessor gap-size
-    :documentation
-    "The gap size between windows.")
-   (gap-step
-    :initform *default-gap-step*
-    :accessor gap-step
-    :documentation
-    "The step size taken during gap alternation.")
-   (gap-effective-p
-    :initform t
-    :accessor gap-effective-p
-    :documentation
-    "Whether gapping is effective: NON-NIL means effective and
-    NIL means ineffective.")))
+  ((gap-size :initform *default-gap-size* :accessor gap-size
+    :documentation "The gap size between windows.")
+   (gap-step :initform *default-gap-step* :accessor gap-step
+    :documentation "The step size taken during gap alternation.")
+   (gap-effective-p :initform t :accessor gap-effective-p
+    :documentation "Whether gapping is effective: NON-NIL means
+    effective and NIL means ineffective.")))
 
 (defun gap-set (n &optional (gap? t) (group (current-group)))
   (assert (integerp n) () "Expected ~A (N) to be of type INTEGER." n)

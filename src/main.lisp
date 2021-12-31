@@ -11,47 +11,30 @@
 ;;; OOP Model
 
 (defclass dyn-float-group-II (stumpwm::float-group)
-  ((dfg-data
-    :initform nil
-    :accessor dfg-data
-    :documentation
-    "The main list of dfg-datum used to hold the information for
-    redrawing and renumbering the windows internal to STUMPWM.")
-   (layout-hist
-    :initform (list *default-layout*)
-    :accessor layout-hist
-    :documentation
-    "The list of layout histories, where the zeroth element is
-    interpreted as the current layout.")
-   (master-ratio
-    :initform *default-master-ratio*
-    :accessor master-ratio
-    :documentation
-    "Ratio of the master window takes.")
-   (gap-info
-    :initform (make-instance 'gap-info)
-    :accessor gap-info
-    :documentation
-    "Info for gapping.")))
+  ((dfg-data :initform nil :accessor dfg-data
+             :documentation "The main list of dfg-datum used to
+             hold the information for redrawing and renumbering
+             the windows internal to STUMPWM.")
+   (layout-hist :initform (list *default-layout*) :accessor layout-hist
+                :documentation "The list of layout
+                histories,where the zeroth element is interpreted
+                as the current layout.")
+   (master-ratio :initform *default-master-ratio* :accessor master-ratio
+                 :documentation "Ratio of the master window takes.")
+   (gap-info :initform (make-instance 'gap-info) :accessor gap-info
+             :documentation "Info for gapping.")))
 
 (defclass dfg-datum ()
-  ((xwin-id :initarg :dfg-datum-xwin-id
-            :accessor dfg-datum-xwin-id)
-   (x :initarg :dfg-datum-x
-      :accessor dfg-datum-x)
-   (y :initarg :dfg-datum-y
-      :accessor dfg-datum-y)
-   (height :initarg :dfg-datum-height
-           :accessor dfg-datum-height)
-   (width :initarg :dfg-datum-width
-          :accessor dfg-datum-width)
-   (window-number :initarg :dfg-datum-window-number
-                  :accessor dfg-datum-window-number)
-   (status :initarg :dfg-datum-status
-           :accessor dfg-datum-status
-           :documentation
-           "This slot is special to stumpwm-dfg-II. Its possible
-           values are recorded in *status-list*."))
+  ((xwin-id :initarg :dfg-datum-xwin-id :accessor dfg-datum-xwin-id)
+   (x :initarg :dfg-datum-x :accessor dfg-datum-x)
+   (y :initarg :dfg-datum-y :accessor dfg-datum-y)
+   (height :initarg :dfg-datum-height :accessor dfg-datum-height)
+   (width :initarg :dfg-datum-width :accessor dfg-datum-width)
+   (window-number :initarg :dfg-datum-window-number :accessor dfg-datum-window-number)
+   (status :initarg :dfg-datum-status :accessor dfg-datum-status
+           :documentation "This slot is special to
+           stumpwm-dfg-II. Its possible values are recorded in
+           *status-list*."))
   (:documentation "The datum for redrawing and renumbering the
   windows internal to STUMPWM."))
 
