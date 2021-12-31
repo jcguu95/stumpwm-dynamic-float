@@ -40,16 +40,55 @@
 
 ;;; Misc.
 
-(defmethod make-dfg-datum ((w stumpwm::float-window)
-                           &optional (status 'tiled))
-  (make-instance 'dfg-datum
-                 :dfg-datum-xwin-id (get-xwin-id w)
-                 :dfg-datum-x (window-x w)
-                 :dfg-datum-y (window-y w)
-                 :dfg-datum-height (window-height w)
-                 :dfg-datum-width (window-width w)
-                 :dfg-datum-window-number (window-number w)
-                 :dfg-datum-status status))
+(defparameter *new-window-spec-hooks* nil
+  "Hooks for specifying spec for new windows satisfying
+customizable predicates. For each new window, the hooks are
+called one by one by #'NEW-WINDOW-SPEC until it succeeds. For
+example, when its value is
+
+    (list (cons (lambda (w) (equal 0 (search \"[TOP]\" (window-title w))))
+                (list :x 300 :y 300 :height 300 :width 300 :status 'foreground)))
+
+Then all new windows that satisfy the predicate (namely, those
+whose titles start with \"[TOP]\") will be assigned to the
+spec.")
+
+(defun new-window-spec (window)
+  "Generate spec for new windows WINDOW based on the customizable
+hooks in *NEW-WINDOW-SPEC-HOOKS*. It calls the hooks one by one,
+and breaks the loop once a predicate is satisfied. NIL is
+returned if no hook succeeds."
+  (block outer
+    (loop for hook in *new-window-spec-hooks*
+          do (when (funcall (car hook) window)
+               (return-from outer (cdr hook))))))
+
+(defun override-internal-with-dfg-datum (window)
+  "If WINDOW has a nontrivial piece of datum, overwrite the
+values (x, y, width, height) into the slots of WINDOW internal to
+StumpWM."
+  (let ((datum (get-dfg-datum window)))
+    (when datum
+      (with-accessors ((x window-x) (width window-width)
+                       (y window-y) (height window-height))
+          window
+        (setf x (dfg-datum-x datum) width (dfg-datum-width datum)
+              y (dfg-datum-y datum) height (dfg-datum-height datum))))))
+
+(defmethod make-dfg-datum ((window stumpwm::float-window))
+  "It should only be called when a new window is created."
+  (flet ((unless- (x y) (if x x y)))
+    (let* ((spec   (new-window-spec window))
+           (x      (unless- (getf spec :x)      (window-x window)))
+           (y      (unless- (getf spec :y)      (window-y window)))
+           (width  (unless- (getf spec :width)  (window-width window)))
+           (height (unless- (getf spec :height) (window-height window)))
+           (status (unless- (getf spec :status) 'tiled)))
+      (make-instance 'dfg-datum :dfg-datum-status status
+                                :dfg-datum-x x :dfg-datum-width width
+                                :dfg-datum-y y :dfg-datum-height height
+                                :dfg-datum-xwin-id (get-xwin-id window)
+                                :dfg-datum-window-number (window-number window)))))
 
 (defmethod get-dfg-datum ((w stumpwm::float-window)
                           &optional (group (current-group)))
@@ -99,7 +138,8 @@ manner:
     (flet ((ensure-existence (window)
              (unless (member (get-xwin-id window)
                              (mapcar #'dfg-datum-xwin-id dfg-data))
-               (setf dfg-data (append dfg-data (list (make-dfg-datum window)))))))
+               (setf dfg-data (append dfg-data (list (make-dfg-datum window))))
+               (override-internal-with-dfg-datum window))))
       (let* ((internal (stumpwm::group-windows group))
              (internal-ids (mapcar #'get-xwin-id internal)))
         (loop for window in internal

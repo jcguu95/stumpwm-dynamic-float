@@ -94,6 +94,22 @@ following code.
         '(1 2 3 4 5 6 7 8 9 0))
 #+end_src
 
+**** Customized New Window Behavior
+
+By default, this extension tiles every new window introduced into
+the group. To alter this behavior, add a customized hook into the
+variable =*new-window-spec-hooks*=. For example, the following code
+forces any new window with title starting from ="[TOP]"= to have
+the spec specified in the car of the cons.
+
+#+begin_src common-lisp
+(setf *new-window-spec-hooks*
+      (append *new-window-spec-hooks*
+              (list (cons (lambda (w) (equal 0 (search "[TOP]" (window-title w))))
+                          (list :x 300 :y 300 :height 300 :width 300 :status 'foreground)))))
+#+end_src
+
+
 *** Layout and Customization
 
 Currently, supported layouts are ='(left-vertical horizontal
