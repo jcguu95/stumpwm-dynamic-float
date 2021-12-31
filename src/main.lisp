@@ -122,7 +122,7 @@ window-number) in the DFG-DATA of the GROUP."
                                 (ay dfg-datum-y) (ah dfg-datum-height))
                    (nth k dfg-data)
                  ;; Update the values (x, y, width, height) according to the internal window lists.
-                 (let ((xwin (get-xwin-with-xwin-id (dfg-datum-xwin-id (nth k dfg-data)))))
+                 (let ((xwin (get-xwin-with-xwin-id (dfg-datum-xwin-id (nth k dfg-data)) group)))
                    (setf ax (window-x xwin) aw (window-width xwin)
                          ay (window-y xwin) ah (window-height xwin)))
                  ;; Update the dimensions for the dfg-data with status being tiled.
@@ -143,17 +143,23 @@ crashes STUMPWM. It should be called after #'sync-existence."
                             (xwin-id dfg-datum-xwin-id)
                             (win-number dfg-datum-window-number))
                datum
-             (let ((window (get-xwin-with-xwin-id xwin-id)))
+             (let ((window (get-xwin-with-xwin-id xwin-id group)))
                (setf (window-number window) win-number) ; renumber!
                (stumpwm::float-window-move-resize       ; redraw!
                 window :x x :y y :width width :height height)))))
 
 ;;; Interaction Methods
 
-(defmethod group-add-window
-    ((group dyn-float-group-II) window &key &allow-other-keys)
-  (call-next-method)
-  (sync! group))
+(flet ((add-float-window (group window raise)
+         (change-class window 'stumpwm::float-window)
+         (stumpwm::float-window-align window)
+         (stumpwm::group-focus-window group window)))
+  (defmethod group-add-window
+      ((group dyn-float-group-II) window &key raise &allow-other-keys)
+    (add-float-window group window raise)
+    ;; (call-next-method) ; commented because of an undesired
+    ;;                    ; change in commit: b6529119559231c9b60e4c7052946afb2cb454a7
+    (sync! group)))
 
 (defmethod group-delete-window
     ((group dyn-float-group-II) (window stumpwm::float-window))
@@ -187,10 +193,13 @@ crashes STUMPWM. It should be called after #'sync-existence."
   (sync! group))
 
 (defmacro defcommand-window-status (options)
-  (loop for option in options
-        do (eval `(defcommand ,(read-from-string (concat "window-status-make-" (format nil "~s" option)))
-                      (&optional (window (current-window)) (group (current-group))) ()
-                    (window-status-change (quote ,option) window group)))))
+  `(progn
+     ,@(loop for option in options
+             collect `(defcommand ,(read-from-string
+                                    (concat "window-status-make-"
+                                            (format nil "~s" option)))
+                          (&optional (window (current-window)) (group (current-group))) ()
+                        (window-status-change (quote ,option) window group)))))
 ;; New Commands:
 ;; + window-status-make-foreground
 ;; + window-status-make-tiled

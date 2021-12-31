@@ -77,16 +77,17 @@ windows among the N of them."
 ;;; Master Ratio
 
 (defmacro defcommand-master-ratio (options)
-  (loop for option in options
-        do (eval (let ((body (case option
-                               ('set-default `(setf master-ratio *default-master-ratio*))
-                               ('increase `(setf master-ratio (* 1.05 master-ratio)))
-                               ('decrease `(setf master-ratio (* (/ 1 1.05) master-ratio))))))
-                   `(defcommand ,(read-from-string (concat "master-ratio-" (format nil "~s" option)))
-                        (&optional (group (current-group))) ()
-                      (symbol-macrolet ((master-ratio (master-ratio group)))
-                        ,body
-                        (sync! group)))))))
+  `(progn
+     ,@(loop for option in options
+             collect (let ((body (case option
+                                   ('set-default `(setf master-ratio *default-master-ratio*))
+                                   ('increase `(setf master-ratio (* 1.05 master-ratio)))
+                                   ('decrease `(setf master-ratio (* (/ 1 1.05) master-ratio))))))
+                       `(defcommand ,(read-from-string (concat "master-ratio-" (format nil "~s" option)))
+                            (&optional (group (current-group))) ()
+                          (symbol-macrolet ((master-ratio (master-ratio group)))
+                            ,body
+                            (sync! group)))))))
 ;; New Commands:
 ;; + master-ratio-set-default
 ;; + master-ratio-increase

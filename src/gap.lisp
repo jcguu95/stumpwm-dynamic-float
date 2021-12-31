@@ -1,5 +1,3 @@
-;;;; gap.lisp
-
 (in-package :stumpwm-dfg-II)
 
 ;;;
@@ -26,18 +24,19 @@
   (sync! group))
 
 (defmacro defcommand-gap (options)
-  (loop for option in options
-        do (eval (let ((body (case option
-                               ('toggle `(gap-set gap-size (not gap?) group))
-                               ('set-default `(gap-set *default-gap-size* t group))
-                               ('increase `(gap-set (+ gap-size gap-step) t group))
-                               ('decrease `(gap-set (- gap-size gap-step) t group)))))
-                   `(defcommand ,(read-from-string (concat "gap-" (format nil "~s" option)))
-                        (&optional (group (current-group))) ()
-                      (let ((gap-size (gap-size (gap-info group)))
-                            (gap-step (gap-step (gap-info group)))
-                            (gap? (gap-effective-p (gap-info group))))
-                        ,body))))))
+  `(progn
+     ,@(loop for option in options
+             collect (let ((body (case option
+                                   ('toggle `(gap-set gap-size (not gap?) group))
+                                   ('set-default `(gap-set *default-gap-size* t group))
+                                   ('increase `(gap-set (+ gap-size gap-step) t group))
+                                   ('decrease `(gap-set (- gap-size gap-step) t group)))))
+                       `(defcommand ,(read-from-string (concat "gap-" (format nil "~s" option)))
+                            (&optional (group (current-group))) ()
+                          (let ((gap-size (gap-size (gap-info group)))
+                                (gap-step (gap-step (gap-info group)))
+                                (gap? (gap-effective-p (gap-info group))))
+                            ,body))))))
 
 ;; New Commands: gap-set-default, gap-increase, gap-decrease.
 (defcommand-gap (toggle set-default increase decrease))

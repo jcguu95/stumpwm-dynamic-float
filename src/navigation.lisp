@@ -1,15 +1,14 @@
-;;;; main.lisp
-
 (in-package :stumpwm-dfg-II)
 
 ;;;
 
 (defmacro defcommand-window-focus (options)
-  (loop for option in options
-        do (eval `(defcommand ,(read-from-string (concat "window-focus-" (format nil "~s" option)))
-                      (&optional (group (current-group))) ()
-                    (,(read-from-string (concat "stumpwm::focus-" (format nil "~s" option) "-window"))
-                     group)))))
+  `(progn
+     ,@(loop for option in options
+             collect `(defcommand ,(read-from-string (concat "window-focus-" (format nil "~s" option)))
+                          (&optional (group (current-group))) ()
+                        (,(read-from-string (concat "stumpwm::focus-" (format nil "~s" option) "-window"))
+                         group)))))
 ;; Commands: window-focus-next, window-focus-prev.
 (defcommand-window-focus (next prev))
 

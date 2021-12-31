@@ -1,4 +1,6 @@
-** Dynamic Tiling & Floating Windows for StumpWM
+* StumpWM Extension
+
+** Dynamic Tiling & Floating Windows 
 
 This extension =stumpwm-dynamic-float= provides StumpWM users a
 (gapped) dynamic tiling experience based on its floating windows.

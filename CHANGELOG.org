@@ -1,0 +1,12 @@
+* 2.0.0 => 2.0.1
+
++ Fix the definitions of macros that help define commands. The
+  original code smells bad (especially the =eval= in the macros),
+  and produce different behaviors because =(ql:quickload ..)= only
+  loads the file once the compiled files are present.
+
++ Fix bug: =#'get-xwin-with-xwin-id=.
+
++ Fix bug: Redefine the method =#'group-add-window= to reflect the
+  official change (b6529119559231c9b60e4c7052946afb2cb454a7) in
+  the official StumpWM repo.
