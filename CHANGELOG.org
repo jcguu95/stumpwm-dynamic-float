@@ -1,6 +1,11 @@
+* 2.2.0 => 2.2.1
+
++ Export the symbol =stumpwm-dfg:*new-window-spec-hooks*=.
++ Updated readme.
+
 * 2.1.0 => 2.2.0
 
-Change every appearance of =stumpwm-dfg-II= into =stumpwm-dfg=.
++ Change every appearance of =stumpwm-dfg-II= into =stumpwm-dfg=.
 
 * 2.0.1 => 2.1.0
 

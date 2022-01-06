@@ -29,4 +29,7 @@
 
            ;; Add
            #:gnew-dyn-float
-           #:gnew-dyn-float-bg))
+           #:gnew-dyn-float-bg
+
+           #:*new-window-spec-hooks*
+           ))

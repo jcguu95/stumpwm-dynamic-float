@@ -28,29 +28,23 @@ Commonly used commands defined in =stumpwm-dynamic-float= are
 included in this configuration example.
 
 #+begin_src common-lisp
-(in-package :stumpwm-dfg)
-
 ;; Navigation
 (define-key *top-map* (kbd "s-j") "window-focus-next")
 (define-key *top-map* (kbd "s-k") "window-focus-prev")
 (define-key *top-map* (kbd "s-J") "permute-window")
 (define-key *top-map* (kbd "s-K") "permute-window-reverse")
-
 ;; Master Ratio
 (define-key *top-map* (kbd "s-+") "master-ratio-increase")
 (define-key *top-map* (kbd "s--") "master-ratio-decrease")
 (define-key *top-map* (kbd "s-=") "master-ratio-set-default")
-
 ;; Layout Selection
 (define-key *top-map* (kbd "s-f") "layout-toggle-fullscreen")
 (define-key *top-map* (kbd "s-F") "layout-change-next")
-
 ;; Gaps
 (define-key *top-map* (kbd "s-[") "gap-toggle")
 (define-key *top-map* (kbd "s-]") "gap-set-default")
 (define-key *top-map* (kbd "s-}") "gap-increase")
 (define-key *top-map* (kbd "s-{") "gap-decrease")
-
 ;; Window Status: 'tiled, 'foreground, 'background.
 (define-key *top-map* (kbd "s-_") "window-status-tile-at-point")
 (define-key *top-map* (kbd "s-|") "window-status-make-all-tiled")
@@ -63,14 +57,12 @@ starts it create 10 dynamic floating windows for me, named 0
 to 9.
 
 #+begin_src common-lisp
-(in-package :stumpwm-dfg)
-
 ;; Groups creation
 (grename "1")
 (loop for n in '(2 3 4 5 6 7 8 9 0)
-      do (gnew-dyn-float-bg (format nil "~a" n)))
+      do (stumpwm-dfg:gnew-dyn-float-bg (format nil "~a" n)))
 (gkill)
-(gnew-dyn-float "1")
+(stumpwm-dfg:gnew-dyn-float "1")
 #+end_src
 
 To bind group-navigation and window-throwing in batch, use the
@@ -78,7 +70,6 @@ following code.
 
 #+begin_src common-lisp
 (in-package :stumpwm)
-
 ;; Keybindings for selecting and navigating among groups.
 ;; E.g. =super-3= navigates to the third group, while =super-#=
 ;; throws the current window at point to the third group.
@@ -103,11 +94,15 @@ forces any new window with title starting from ="[TOP]"= to have
 the spec specified in the car of the cons.
 
 #+begin_src common-lisp
-(setf *new-window-spec-hooks*
-      (append *new-window-spec-hooks*
-              (list (cons (lambda (w) (equal 0 (search "[TOP]" (window-title w))))
-                          (list :x 300 :y 300 :height 300 :width 300 :status 'foreground)))))
+(push (cons (lambda (w) (equal 0 (search "[TOP]" (window-title w))))
+            (list ;; :x 300 :y 300 :height 300 :width 300
+                  :status 'foreground))
+      stumpwm-dfg:*new-window-spec-hooks*)
 #+end_src
+
+Remark. Probably it is a better approach to use stumpwm's window
+class and hooks to alter the behavior of certain new windows.
+Please let me know if you figure out how to do so.
 
 
 *** Layout and Customization
