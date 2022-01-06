@@ -28,7 +28,7 @@ Commonly used commands defined in =stumpwm-dynamic-float= are
 included in this configuration example.
 
 #+begin_src common-lisp
-(in-package :stumpwm-dfg-II)
+(in-package :stumpwm-dfg)
 
 ;; Navigation
 (define-key *top-map* (kbd "s-j") "window-focus-next")
@@ -63,14 +63,14 @@ starts it create 10 dynamic floating windows for me, named 0
 to 9.
 
 #+begin_src common-lisp
-(in-package :stumpwm-dfg-II)
+(in-package :stumpwm-dfg)
 
 ;; Groups creation
 (grename "1")
 (loop for n in '(2 3 4 5 6 7 8 9 0)
-      do (gnew-dyn-float-II-bg (format nil "~a" n)))
+      do (gnew-dyn-float-bg (format nil "~a" n)))
 (gkill)
-(gnew-dyn-float-II "1")
+(gnew-dyn-float "1")
 #+end_src
 
 To bind group-navigation and window-throwing in batch, use the

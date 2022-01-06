@@ -1,3 +1,12 @@
+* 2.1.0 => 2.2.0
+
+Change every appearance of =stumpwm-dfg-II= into =stumpwm-dfg=.
+
+* 2.0.1 => 2.1.0
+
++ Support customizable new window behavior (see
+  =*new-window-spec-hooks*= and related new functions.)
+
 * 2.0.0 => 2.0.1
 
 + Fix the definitions of macros that help define commands. The
@@ -10,8 +19,3 @@
 + Fix bug: Redefine the method =#'group-add-window= to reflect the
   official change (b6529119559231c9b60e4c7052946afb2cb454a7) in
   the official StumpWM repo.
-
-* 2.0.1 => 2.1.0
-
-+ Support customizable new window behavior (see
-  =*new-window-spec-hooks*= and related new functions.)

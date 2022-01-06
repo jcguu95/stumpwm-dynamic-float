@@ -1,6 +1,6 @@
 ;;;; layout.lisp
 
-(in-package :stumpwm-dfg-II)
+(in-package :stumpwm-dfg)
 
 ;;;
 
@@ -22,7 +22,7 @@
 ;;     (if modeline (stumpwm::mode-line-position modeline) nil)))
 
 (defmacro deflayout (name docstring body)
-  "The macro for STUMPWM-DFG-II for defining layout. To learn the
+  "The macro for STUMPWM-DFG for defining layout. To learn the
 DSL, consult the examples or read the slots in LET* form. The
 defined layouts should return a plist (:x x :y y :width width
 :height height) that describes the geometry of the kth tiled

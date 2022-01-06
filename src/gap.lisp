@@ -1,4 +1,4 @@
-(in-package :stumpwm-dfg-II)
+(in-package :stumpwm-dfg)
 
 ;;;
 
@@ -18,7 +18,7 @@
 
 (defun gap-set (n &optional (gap? t) (group (current-group)))
   (assert (integerp n) () "Expected ~A (N) to be of type INTEGER." n)
-  (assert (dyn-float-group-II-p group) () "Expected GROUP ~A to be of type DYN-FLOAT-II-GROUP." group)
+  (assert (dyn-float-group-p group) () "Expected GROUP ~A to be of type DYN-FLOAT-GROUP." group)
   (setf (gap-size (gap-info group)) n
         (gap-effective-p (gap-info group)) gap?)
   (sync! group))

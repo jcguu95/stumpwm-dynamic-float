@@ -1,4 +1,4 @@
-(defpackage stumpwm-dfg-II
+(defpackage stumpwm-dfg
   (:use #:cl #:stumpwm)
   (:export #:master-ratio-increase
            #:master-ratio-decrease
@@ -28,5 +28,5 @@
            #:*default-gap-step*
 
            ;; Add
-           #:gnew-dyn-float-II
-           #:gnew-dyn-float-II-bg))
+           #:gnew-dyn-float
+           #:gnew-dyn-float-bg))

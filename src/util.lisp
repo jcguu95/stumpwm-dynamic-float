@@ -1,6 +1,6 @@
 ;;;; util.lisp
 
-(in-package :stumpwm-dfg-II)
+(in-package :stumpwm-dfg)
 
 ;;;
 

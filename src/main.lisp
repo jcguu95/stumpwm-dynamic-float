@@ -1,6 +1,6 @@
 ;;;; main.lisp
 
-(in-package :stumpwm-dfg-II)
+(in-package :stumpwm-dfg)
 
 ;;;
 
@@ -10,7 +10,7 @@
 
 ;;; OOP Model
 
-(defclass dyn-float-group-II (stumpwm::float-group)
+(defclass dyn-float-group (stumpwm::float-group)
   ((dfg-data :initform nil :accessor dfg-data
              :documentation "The main list of dfg-datum used to
              hold the information for redrawing and renumbering
@@ -33,7 +33,7 @@
    (window-number :initarg :dfg-datum-window-number :accessor dfg-datum-window-number)
    (status :initarg :dfg-datum-status :accessor dfg-datum-status
            :documentation "This slot is special to
-           stumpwm-dfg-II. Its possible values are recorded in
+           stumpwm-dfg. Its possible values are recorded in
            *status-list*."))
   (:documentation "The datum for redrawing and renumbering the
   windows internal to STUMPWM."))
@@ -97,9 +97,9 @@ StumpWM."
                     (dfg-datum-xwin-id datum)))
            (dfg-data group)))
 
-(defun dyn-float-group-II-p (group)
-  "The predicate of dyn-float-group-II."
-  (eq (type-of group) 'dyn-float-group-II))
+(defun dyn-float-group-p (group)
+  "The predicate of dyn-float-group."
+  (eq (type-of group) 'dyn-float-group))
 
 (defun tiled? (dfg-datum) (eq 'tiled (dfg-datum-status dfg-datum)))
 
@@ -119,7 +119,7 @@ StumpWM."
 ;;; Core
 
 (defun sync! (&optional (group (current-group)))
-  "Main function of STUMPWM-DFG-II."
+  "Main function of STUMPWM-DFG."
   (sync-existence group)
   (update-dfg-data group)
   (apply-data! group))
@@ -195,19 +195,19 @@ crashes STUMPWM. It should be called after #'sync-existence."
          (stumpwm::float-window-align window)
          (stumpwm::group-focus-window group window)))
   (defmethod group-add-window
-      ((group dyn-float-group-II) window &key raise &allow-other-keys)
+      ((group dyn-float-group) window &key raise &allow-other-keys)
     (add-float-window group window raise)
     ;; (call-next-method) ; commented because of an undesired
     ;;                    ; change in commit: b6529119559231c9b60e4c7052946afb2cb454a7
     (sync! group)))
 
 (defmethod group-delete-window
-    ((group dyn-float-group-II) (window stumpwm::float-window))
+    ((group dyn-float-group) (window stumpwm::float-window))
   (call-next-method)
   (sync! group))
 
 (defmethod group-button-press
-    ((group dyn-float-group-II) button x y (window stumpwm::float-window))
+    ((group dyn-float-group) button x y (window stumpwm::float-window))
   "Free the window if it's pressed at the boarder or with
 *float-window-modifier*."
   (let ((xwin (stumpwm:window-xwin window)))
@@ -228,7 +228,7 @@ crashes STUMPWM. It should be called after #'sync-existence."
 ;;; Window Status
 
 (defun window-status-change (status &optional (window (current-window)) (group (current-group)))
-  (assert (dyn-float-group-II-p group) () "Expected GROUP ~A to be of type DYN-FLOAT-GROUP-II." group)
+  (assert (dyn-float-group-p group) () "Expected GROUP ~A to be of type DYN-FLOAT-GROUP." group)
   (setf (dfg-datum-status (get-dfg-datum window)) status)
   (sync! group))
 
@@ -256,13 +256,13 @@ crashes STUMPWM. It should be called after #'sync-existence."
 
 ;;; Group Adding
 
-(defcommand gnew-dyn-float-II (name &optional background) ((:rest "Group Name: "))
+(defcommand gnew-dyn-float (name &optional background) ((:rest "Group Name: "))
   "Create a new dynamic floating group named NAME."
   (unless name (throw 'error :abort))
   (add-group (stumpwm:current-screen) name
-             :type 'dyn-float-group-II :background background))
+             :type 'dyn-float-group :background background))
 
-(defcommand gnew-dyn-float-II-bg (name) ((:rest "Group Name: "))
+(defcommand gnew-dyn-float-bg (name) ((:rest "Group Name: "))
   "Create a new dynamic floating group named NAME in the
 background."
-  (gnew-dyn-float-II name t))
+  (gnew-dyn-float name t))
