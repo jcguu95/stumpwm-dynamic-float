@@ -60,9 +60,9 @@ to 9.
 ;; Groups creation
 (grename "1")
 (loop for n in '(2 3 4 5 6 7 8 9 0)
-      do (stumpwm-dfg:gnew-dyn-float-bg (format nil "~a" n)))
+      do (stumpwm-dynamic-float:gnew-dyn-float-bg (format nil "~a" n)))
 (gkill)
-(stumpwm-dfg:gnew-dyn-float "1")
+(stumpwm-dynamic-float:gnew-dyn-float "1")
 #+end_src
 
 To bind group-navigation and window-throwing in batch, use the
@@ -97,7 +97,7 @@ the spec specified in the car of the cons.
 (push (cons (lambda (w) (equal 0 (search "[TOP]" (window-title w))))
             (list ;; :x 300 :y 300 :height 300 :width 300
                   :status 'foreground))
-      stumpwm-dfg:*new-window-spec-hooks*)
+      stumpwm-dynamic-float:*new-window-spec-hooks*)
 #+end_src
 
 Remark. Probably it is a better approach to use stumpwm's window
@@ -123,12 +123,27 @@ floating windows that are supposed to be tiled. Then something
 else use this calculated information to redraw the window. See
 ='left-vertical= for a more complicated example (but not too bad).
 
-*** Comments
+*** Implementation Notes
 
-+ Only tested on SBCL.
-+ Any feedback is welcome (especially lisp-fu related).
+Each =dyn-float-group= keeps a private list of data called
+=dfg-data=. Each =dfg-datum= corresponds to a floating window
+internal to stumpwm. Whenever a window is added, removed, or
+dragged, =#'sync!= updates the =dfg-data= (see =group-add-window=,
+=group-delete-window=, and =group-button-press=).
+
+A layout is implemented as a pure function that computes the
+values (=x, y, width, height=) of the kth window among the N-many
+windows that are supposed to be tiled. The dynamic tiling
+functionality is enforced by =#'apply-data!=, in which
+=#'stumpwm::float-window-move-resize= redraws the windows based the
+current layout of the group.
 
 *** TODOs
 
 + Add a demo video.
 + Use emacs to replace =dmenu=, =rofi=, and =notify-send=.
+
+*** Comments
+
++ Only tested on SBCL.
++ Any feedback is welcome (especially lisp-fu related).

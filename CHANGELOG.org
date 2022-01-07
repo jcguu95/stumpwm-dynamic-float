@@ -1,3 +1,8 @@
+* 2.2.1 => 2.2.2
+
++ Added implementation note in readme.
++ Added package nicknames, and fix accordingly in readme.
+
 * 2.2.0 => 2.2.1
 
 + Export the symbol =stumpwm-dfg:*new-window-spec-hooks*=.

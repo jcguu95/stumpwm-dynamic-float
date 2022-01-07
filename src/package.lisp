@@ -1,5 +1,6 @@
-(defpackage stumpwm-dfg
+(defpackage stumpwm-dynamic-float-group
   (:use #:cl #:stumpwm)
+  (:nicknames #:stumpwm-dfg #:stumpwm-dynamic-float)
   (:export #:master-ratio-increase
            #:master-ratio-decrease
            #:master-ratio-set-default
