@@ -5,7 +5,7 @@
   environment based on StumpWM's floating-group."
   :author ("Jin-Cheng Guu <jcguu95@gmail.com>")
   :license "MIT"
-  :version "2.2.2"
+  :version "2.2.3"
   :components ((:module "src"
                 :components ((:file "package")
                              (:file "util")

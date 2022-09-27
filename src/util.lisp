@@ -33,7 +33,7 @@ absolutely smallest."
 
 (check
  (equal '((large l) (medium m) (tiny t) 1 0)
-        (stable-sort '((tiny t) 1 (medium m) 0 (large l))
+        (stable-sort (copy-list '((tiny t) 1 (medium m) 0 (large l)))
                      (sort-logic '(tiny medium large) :transformer #'car))))
 
 ;;;
