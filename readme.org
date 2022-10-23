@@ -140,7 +140,6 @@ current layout of the group.
 
 *** TODOs
 
-+ Add a demo video.
 + Use emacs to replace =dmenu=, =rofi=, and =notify-send=.
 
 *** Comments
