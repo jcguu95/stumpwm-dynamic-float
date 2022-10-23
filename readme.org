@@ -5,7 +5,7 @@
 This extension =stumpwm-dynamic-float= provides StumpWM users a
 (gapped) dynamic tiling experience based on its floating windows.
 
-[Demo video should come soon..]
+Watch the [[https://www.reddit.com/r/stumpwm/comments/n7daiy/floating_dynamic_tiling/][demo videos]] to immediately grasp what it does.
 
 *** Installation
 
